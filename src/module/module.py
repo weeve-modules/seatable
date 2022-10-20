@@ -6,9 +6,13 @@ Edit this file to implement your module.
 """
 
 from logging import getLogger
+from .params import PARAMS
+from seatable_api import Base
 
 log = getLogger("module")
 
+base = Base(PARAMS['API_TOKEN'], 'https://cloud.seatable.io')
+base.auth()
 
 def module_main(received_data: any) -> str:
     """
@@ -23,10 +27,13 @@ def module_main(received_data: any) -> str:
 
     """
 
-    log.debug("Outputting ...")
+    log.debug("Writing to SeaTable ...")
 
     try:
-        # YOUR CODE HERE
+        if type(received_data) is list:
+            base.batch_append_rows(PARAMS['TABLE'], received_data)
+        else:
+            base.append_row(PARAMS['TABLE'], received_data)
 
         return None
 
